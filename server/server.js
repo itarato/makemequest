@@ -5,8 +5,12 @@
 
 console.log('-- Make me quest has been started');
 
+var app_id = '';
+var app_secret = '';
+
 var http = require('http');
 var director = require('director');
+var facebook = require('facebook-node-sdk');
 
 var router = new director.http.Router({
   '/ping': {
@@ -14,10 +18,15 @@ var router = new director.http.Router({
   },
   '/info': {
     get: GET_info
+  },
+  '/token': {
+    get: GET_token
   }
 });
 
 var server = http.createServer(function (req, res) {
+  console.log('-- Incoming request');
+
   router.dispatch(req, res, function (err) {
     res.writeHead(404);
     res.end();
@@ -36,3 +45,11 @@ function GET_info() {
   this.res.end('Make me quest, v0.1');
 }
 
+function GET_token() {
+  var fb = new facebook({appID: app_id, secret: app_secret});
+
+  fb.api('/oauth/access_token?client_id={app-id}&client_secret={app-secret}&grant_type=client_credentials', function(err, data) {
+    console.log(data);
+    console.log(err);
+  });
+}
