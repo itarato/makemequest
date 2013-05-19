@@ -1,9 +1,8 @@
 /**
  * @file
- * Environment configuration for the server Node.
+ * Environment configuration schema for the server Node.
+ * Copy and complete it in local.config.js.
  */
 
-exports.configuration = {
-  'app_id': '',
-  'app_secret': ''
-};
+exports.app_id = '';
+exports.app_secret = '';

@@ -1,26 +1,19 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]><html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!-->
-<html class="no-js"> <!--<![endif]-->
+<html class="no-js">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>Make me quest</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width">
-
-  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-
   <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.css">
   <script src="js/vendor/modernizr-2.6.2.min.js"></script>
 </head>
 <body>
-<div id="fb-root"></div>
 <!--
   FACEBOOK LOGIN SECTION START
  -->
+<div id="fb-root"></div>
 <script>
   // Additional JS functions here
   window.fbAsyncInit = function() {
@@ -42,7 +35,6 @@
         // The response object is returned with a status field that lets the app know the current
         // login status of the person. In this case, we're handling the situation where they
         // have logged in to the app.
-        testAPI();
       } else if (response.status === 'not_authorized') {
         // In this case, the person is logged into Facebook, but not into the app, so we call
         // FB.login() to prompt them to do so.
@@ -71,15 +63,6 @@
     js.src = "//connect.facebook.net/en_US/all.js";
     ref.parentNode.insertBefore(js, ref);
   }(document));
-
-  // Here we run a very simple test of the Graph API after login is successful.
-  // This testAPI() function is only called in those cases.
-  function testAPI() {
-    console.log('Welcome!  Fetching your information.... ');
-    FB.api('/me', function(response) {
-      console.log('Response', response);
-    });
-  }
 </script>
 <!--
   FACEBOOK LOGIN SECTION END
@@ -89,7 +72,7 @@
 
 <!--Below we include the Login Button social plugin. This button uses the JavaScript SDK to-->
 <!--present a graphical Login button that triggers the FB.login() function when clicked.-->
-<fb:login-button show-faces="true" width="200" max-rows="1"></fb:login-button>
+<fb:login-button show-faces="true" width="200" max-rows="1" scope="user_about_me"></fb:login-button>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
