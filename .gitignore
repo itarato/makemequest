@@ -2,4 +2,5 @@ client/js/vendor
 client/vendor
 server/node_modules
 server/local.config.js
+client/js/local.config.js
 
