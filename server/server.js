@@ -6,35 +6,62 @@
 console.log('-- Make me quest has been started');
 
 var config = require('./local.config.js');
-var http = require('http');
-var director = require('director');
 var db = require('./db.js');
 
-var router = new director.http.Router({
-  '/ping': {
-    get: GET_ping
-  },
-  '/user': {
-    get: GET_user
-  }
-});
+var http = require('http');
+var url = require('url');
+var querystring = require('querystring');
 
 var server = http.createServer(function (req, res) {
   console.log('-- Incoming request');
 
-  router.dispatch(req, res, function (err) {
-    res.writeHead(404);
-    res.end();
-  });
+  var parsed_url = url.parse(req.url, true);
+
+  if (req.method == 'GET') {
+    switch (parsed_url.pathname) {
+      case '/ping':
+        GET_ping(req, res, parsed_url);
+        break;
+    }
+  }
+  else if (req.method == 'POST') {
+    switch (parsed_url.pathname) {
+      case '/user/identify':
+        POST_user_identify(req, res, parsed_url);
+        break;
+    }
+  }
 });
 
 server.listen(8081, 'localhost');
 
-function GET_ping() {
-  this.res.writeHead(200, {'Content-Type': 'text/plain'});
-  this.res.end('pong');
+function GET_ping(req, res, parsed_url) {
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.end('pong');
 }
 
-function GET_user() {
+function POST_user_identify(req, res, parsed_url) {
+  console.log('-- POST_user_identify');
 
+  var post_raw_data = '';
+  req.on('data', function (data) {
+    post_raw_data += data;
+
+    if (post_raw_data.length > 1e6) {
+      post_raw_data = '';
+      res.writeHead(413, {'Content-Type': 'text/plain'}).end();
+      req.connection.destroy();
+    }
+  });
+
+  req.on('end', function () {
+    var post_data = querystring.parse(post_raw_data);
+    console.log(post_data);
+    res.writeHead(200, {
+      'Content-Type': 'text/plain',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'X-Requested-With'
+    });
+    res.end();
+  });
 }
