@@ -35,14 +35,7 @@ var server = http.createServer(function (req, res) {
 
 server.listen(8081, 'localhost');
 
-function GET_ping(req, res, parsed_url) {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.end('pong');
-}
-
-function POST_user_identify(req, res, parsed_url) {
-  console.log('-- POST_user_identify');
-
+function get_post_params(req, res, callback) {
   var post_raw_data = '';
   req.on('data', function (data) {
     post_raw_data += data;
@@ -56,7 +49,20 @@ function POST_user_identify(req, res, parsed_url) {
 
   req.on('end', function () {
     var post_data = querystring.parse(post_raw_data);
-    console.log(post_data);
+    callback(post_data);
+  });
+}
+
+function GET_ping(req, res, parsed_url) {
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.end('pong');
+}
+
+function POST_user_identify(req, res, parsed_url) {
+  console.log('-- POST_user_identify');
+
+  get_post_params(req, res, function (post_data) {
+    console.log('-- Post data ready', post_data);
     res.writeHead(200, {
       'Content-Type': 'text/plain',
       'Access-Control-Allow-Origin': '*',
