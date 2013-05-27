@@ -15,3 +15,4 @@ A sophisticated social game where you create the world and the story.
 * start the server:
   * cd PATH_TO_APP/server
   * node server.js
+* open through apache or nginx: client/index.html

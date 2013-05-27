@@ -5,6 +5,7 @@
 
 var url = require('url');
 var querystring = require('querystring');
+var user = require('./model/user.js');
 
 exports.attachServer = function(server) {
   server.on('request', function (req, res) {
@@ -56,7 +57,14 @@ function POST_user_identify(req, res, parsed_url) {
   console.log('-- POST_user_identify');
 
   get_post_params(req, res, function (post_data) {
-    console.log('-- Post data ready', post_data);
+    console.log('-- Post data ready');
+
+    var _user = user.user(post_data);
+
+    _user.load(function (user_data) {
+
+    });
+
     res.writeHead(200, {
       'Content-Type': 'text/plain',
       'Access-Control-Allow-Origin': '*',

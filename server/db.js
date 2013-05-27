@@ -27,7 +27,7 @@ exports.openCollection = function(collection, callback) {
   });
 }
 
-function onDatabaseReady(err, db, collecion, callback) {
+function onDatabaseReady(err, db, collection, callback) {
   db.collection(collection, function (err, collection) {
     onCollectionReady(err, collection, callback);
   });
