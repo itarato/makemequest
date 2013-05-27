@@ -10,8 +10,8 @@ A sophisticated social game where you create the world and the story.
 # Run
 
 * start mongodb
-** cd PATH_TO_MONGO/bin
-** ./mongod
+  * cd PATH_TO_MONGO/bin
+  * ./mongod
 * start the server:
-** cd PATH_TO_APP/server
-** node server.js
+  * cd PATH_TO_APP/server
+  * node server.js
