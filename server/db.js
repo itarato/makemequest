@@ -13,26 +13,52 @@ var db = new mongodb.Db(db_name, new mongodb.Server(host, port, {}), {native_par
 
 console.log('-- Storage init');
 
+// Collection cache.
+var collections = {};
+
+// DB is ready flag.
+var db_is_ready = false;
+
 /**
  * Obtain access to a collection.
  *
  * @param collection
  *  Name of the collection.
- * @param callback
+ * @param callback [collection:object]
  *  Callback to return the collection to. Signature: function(collection_object){};
  */
-exports.openCollection = function(collection, callback) {
-  db.open(function (err, db) {
-    onDatabaseReady(err, db, collection, callback);
-  });
+exports.openCollection = function(collection_name, callback) {
+  if (db_is_ready) {
+    onDatabaseReady(null, db, collection_name, callback);
+  }
+  else {
+    db.open(function (err, db) {
+      if (err) {
+        console.log('-- ERROR in db open', err);
+      }
+
+      db_is_ready = true;
+      onDatabaseReady(err, db, collection_name, callback);
+    });
+  }
 }
 
-function onDatabaseReady(err, db, collection, callback) {
-  db.collection(collection, function (err, collection) {
-    onCollectionReady(err, collection, callback);
-  });
-}
+function onDatabaseReady(err, db, collection_name, callback) {
+  if (err) {
+    console.log('-- ERROR in db ready', err);
+  }
 
-function onCollectionReady(err, collection, callback) {
-  callback(collection);
+  if (collections.hasOwnProperty(collection_name)) {
+    callback(collections[collection_name]);
+  }
+  else {
+    db.collection(collection_name, function (err, collection) {
+      if (err) {
+        console.log('-- ERROR in collection ready', err);
+      }
+
+      collections[collection_name] = collection;
+      callback(collection);
+    });
+  }
 }
