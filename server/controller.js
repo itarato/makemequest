@@ -12,6 +12,7 @@ exports.attachServer = function(server) {
     console.log('-- Incoming request');
 
     var parsed_url = url.parse(req.url, true);
+    console.log(req.method);
 
     if (req.method == 'GET') {
       switch (parsed_url.pathname) {
@@ -25,6 +26,11 @@ exports.attachServer = function(server) {
         case '/user/identify':
           POST_user_identify(req, res, parsed_url);
           break;
+      }
+
+      var args = parsed_url.pathname.split('/').filter(function(item){return item;});
+      if (args[0] == 'user' && args[1] > 0) {
+        OPTIONS_user_save(req, res, parsed_url);
       }
     }
   });
@@ -59,17 +65,27 @@ function POST_user_identify(req, res, parsed_url) {
   get_post_params(req, res, function (post_data) {
     console.log('-- Post data ready');
 
-    var _user = user.user(post_data);
-
-    _user.load(function (user_data) {
-
+    user.initWithFacebookData(post_data, function (user_data) {
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'X-Requested-With'
+      });
+      res.write(JSON.stringify(user_data));
+      res.end();
     });
+  });
+}
 
+function OPTIONS_user_save(req, res, parsed_url) {
+  get_post_params(req, res, function(post_data) {
+    console.log(post_data);
     res.writeHead(200, {
-      'Content-Type': 'text/plain',
+      'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Headers': 'X-Requested-With'
     });
+    res.write(JSON.stringify({success: true}));
     res.end();
   });
 }
