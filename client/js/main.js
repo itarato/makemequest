@@ -5,6 +5,9 @@
 
 var MMQ = MMQ || {};
 
+_.extend(MMQ, Backbone.Events);
+MMQ.on('playerIsReady', onPlayerReady);
+
 MMQ.states = {
   INITIALIZED: false,
   INIT_IN_PROGRESS: false
@@ -22,6 +25,8 @@ MMQ.init = function() {
       success: function (response) {
         console.log('-- Success', response);
         MMQ.player = new MMQ.User(response);
+        MMQ.trigger('playerIsReady', MMQ.player);
+
         MMQ.states.INIT_IN_PROGRESS = false;
         MMQ.states.INITIALIZED = true;
       },
@@ -41,3 +46,11 @@ MMQ.generalAjaxErrorHandler = function(callback) {
     }
   };
 };
+
+function onPlayerReady(player) {
+  var pos = player.get('pos');
+  jQuery.ajax({
+    type: 'GET',
+    url: MMQ.config.serverPath + '/map/' + pos[0] + '/' + pos[1] + '/5'
+  });
+}

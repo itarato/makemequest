@@ -28,6 +28,7 @@ exports.attachServer = function(server) {
           break;
       }
 
+      // User save action.
       var args = parsed_url.pathname.split('/').filter(function(item){return item;});
       if (args[0] == 'user' && args[1] > 0) {
         OPTIONS_user_save(req, res, parsed_url);
@@ -80,12 +81,14 @@ function POST_user_identify(req, res, parsed_url) {
 function OPTIONS_user_save(req, res, parsed_url) {
   get_post_params(req, res, function(post_data) {
     console.log(post_data);
-    res.writeHead(200, {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'X-Requested-With'
+    user.save(post_data.fbid, post_data, function () {
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'X-Requested-With'
+      });
+      res.write(JSON.stringify({success: true}));
+      res.end();
     });
-    res.write(JSON.stringify({success: true}));
-    res.end();
   });
 }

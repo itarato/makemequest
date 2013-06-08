@@ -6,7 +6,7 @@
 var db = require('../db.js');
 
 exports.initWithFacebookData = function (data, callback) {
-  this.loadByFBID(data['id'], function (item) {
+  loadByFBID(data['id'], function (item) {
     if (!item) {
       var user_data = {
         'fbid': data['id'],
@@ -26,18 +26,22 @@ exports.initWithFacebookData = function (data, callback) {
   });
 };
 
-exports.loadByFBID = function (fbid, callback) {
+exports.save = function (fbid, data, callback) {
   db.openCollection('user', function (collection) {
-    collection.findOne({'fbid': data['id']}, function (err, item) {
-      callback(item);
+    delete data._id;
+    collection.update({fbid: fbid}, data, {safe: true}, function (err) {
+      if (err) {
+        console.log('-- Error on user save', err);
+      }
+      callback();
     });
   });
 };
 
-exports.save = function (fbid, data, callback) {
+function loadByFBID (fbid, callback) {
   db.openCollection('user', function (collection) {
-    collection.update({'fbid': fbid}, data, {}, function () {
-      callback();
+    collection.findOne({'fbid': fbid}, function (err, item) {
+      callback(item);
     });
   });
 };
