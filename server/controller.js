@@ -12,6 +12,7 @@ exports.attachServer = function(server) {
     console.log('-- Incoming request');
 
     var parsed_url = url.parse(req.url, true);
+    var args = parsed_url.pathname.split('/').filter(function(item){return item;});
     console.log(req.method);
 
     if (req.method == 'GET') {
@@ -19,6 +20,11 @@ exports.attachServer = function(server) {
         case '/ping':
           GET_ping(req, res, parsed_url);
           break;
+      }
+
+      // Get the map.
+      if (arg[0] == 'map' && args[1] && args[2] && args[3]) {
+        GET_map(req, res, parsed_url, args);
       }
     }
     else if (req.method == 'POST') {
@@ -29,7 +35,6 @@ exports.attachServer = function(server) {
       }
 
       // User save action.
-      var args = parsed_url.pathname.split('/').filter(function(item){return item;});
       if (args[0] == 'user' && args[1] > 0) {
         OPTIONS_user_save(req, res, parsed_url);
       }
@@ -91,4 +96,11 @@ function OPTIONS_user_save(req, res, parsed_url) {
       res.end();
     });
   });
+}
+
+function GET_map(req, res, parsed_url, args) {
+  var x = args[1];
+  var y = args[2];
+  var size = args[3];
+
 }
